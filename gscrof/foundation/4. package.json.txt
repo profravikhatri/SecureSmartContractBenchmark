@@ -1,0 +1,56 @@
+{
+  "name": "secure-smart-contract-benchmark",
+  "version": "1.0.0",
+  "description": "A reproducible benchmark framework for secure and cost-efficient smart contract optimization using Ethereum and Hardhat.",
+  "author": {
+    "name": "Ravi Khatri",
+    "email": "your-email@example.com"
+  },
+  "license": "MIT",
+  "private": true,
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "solidity",
+    "hardhat",
+    "benchmark",
+    "smart-contracts",
+    "cyber-security",
+    "smart-grid",
+    "gas-optimization",
+    "research"
+  ],
+  "scripts": {
+    "clean": "npx hardhat clean",
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "coverage": "npx hardhat coverage",
+    "deploy": "npx hardhat run scripts/deploy.js --network sepolia",
+    "benchmark": "node scripts/benchmark.js",
+    "replay": "node scripts/replayDataset.js",
+    "export": "node scripts/exportMetrics.js",
+    "lint": "npx solhint 'contracts/**/*.sol'",
+    "format": "npx prettier --write .",
+    "gas": "REPORT_GAS=true npx hardhat test",
+    "verify": "npx hardhat run scripts/verify.js --network sepolia"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "hardhat": "^2.22.10",
+    "hardhat-gas-reporter": "^2.2.1",
+    "solhint": "^5.0.3",
+    "solidity-coverage": "^0.8.12",
+    "prettier": "^3.3.3",
+    "prettier-plugin-solidity": "^1.4.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

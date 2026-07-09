@@ -1,0 +1,270 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Contract : OracleValidation
+ *
+ * Description:
+ * Benchmark validation module for evaluating oracle correctness,
+ * data freshness, and transaction consistency.
+ *
+ * This contract records validation results for statistical analysis
+ * and reproducible benchmark experiments.
+ * -----------------------------------------------------------------------------
+ */
+
+interface IOracleManager {
+
+    function validateEnergyRecord(
+        uint256 energyAmount,
+        uint256 totalCost
+    )
+        external
+        returns(bool);
+
+    function getLatestPrice()
+        external
+        view
+        returns(uint256);
+
+    function getLastUpdate()
+        external
+        view
+        returns(uint256);
+
+}
+
+contract OracleValidation {
+
+    IOracleManager public oracle;
+
+    uint256 public validationCounter;
+
+    uint256 public successfulValidations;
+
+    uint256 public failedValidations;
+
+    uint256 public staleDataEvents;
+
+    uint256 public constant MAX_DATA_AGE = 3600;
+
+    struct OracleResult {
+
+        uint256 validationId;
+
+        uint256 energyAmount;
+
+        uint256 totalCost;
+
+        uint256 oraclePrice;
+
+        bool valid;
+
+        bool fresh;
+
+        uint256 timestamp;
+
+    }
+
+    mapping(uint256 => OracleResult)
+
+        public validationResults;
+
+    event OracleValidated(
+
+        uint256 indexed validationId,
+
+        bool valid,
+
+        bool fresh
+
+    );
+
+    constructor(
+
+        address oracleAddress
+
+    )
+
+    {
+
+        oracle =
+
+            IOracleManager(
+
+                oracleAddress
+
+            );
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Validate Oracle Response
+     * --------------------------------------------------------
+     */
+
+    function validateOracle(
+
+        uint256 energyAmount,
+
+        uint256 totalCost
+
+    )
+
+        external
+
+    {
+
+        validationCounter++;
+
+        bool status =
+
+            oracle.validateEnergyRecord(
+
+                energyAmount,
+
+                totalCost
+
+            );
+
+        uint256 oracleTime =
+
+            oracle.getLastUpdate();
+
+        bool fresh =
+
+            block.timestamp <=
+
+            oracleTime +
+
+            MAX_DATA_AGE;
+
+        if(fresh){
+
+            if(status){
+
+                successfulValidations++;
+
+            }
+
+            else{
+
+                failedValidations++;
+
+            }
+
+        }
+
+        else{
+
+            staleDataEvents++;
+
+            status = false;
+
+        }
+
+        validationResults[validationCounter] =
+
+            OracleResult({
+
+                validationId: validationCounter,
+
+                energyAmount: energyAmount,
+
+                totalCost: totalCost,
+
+                oraclePrice: oracle.getLatestPrice(),
+
+                valid: status,
+
+                fresh: fresh,
+
+                timestamp: block.timestamp
+
+            });
+
+        emit OracleValidated(
+
+            validationCounter,
+
+            status,
+
+            fresh
+
+        );
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Retrieve Validation
+     * --------------------------------------------------------
+     */
+
+    function getValidationResult(
+
+        uint256 validationId
+
+    )
+
+        external
+
+        view
+
+        returns(
+
+            OracleResult memory
+
+        )
+
+    {
+
+        return validationResults[validationId];
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Benchmark Summary
+     * --------------------------------------------------------
+     */
+
+    function validationSummary()
+
+        external
+
+        view
+
+        returns(
+
+            uint256 totalRuns,
+
+            uint256 success,
+
+            uint256 failed,
+
+            uint256 stale
+
+        )
+
+    {
+
+        return(
+
+            validationCounter,
+
+            successfulValidations,
+
+            failedValidations,
+
+            staleDataEvents
+
+        );
+
+    }
+
+}

@@ -1,0 +1,227 @@
+# Contributing to SecureSmartContractBenchmark
+
+Thank you for your interest in contributing to **SecureSmartContractBenchmark**.
+
+This repository has been developed as a **reproducible research framework** for benchmarking secure and computationally efficient smart contracts in blockchain-enabled decentralized applications. Contributions that improve scientific quality, software reliability, reproducibility, and experimental validation are welcome.
+
+---
+
+# Research Principles
+
+All contributions should follow the project's core research principles.
+
+- Reproducibility
+- Scientific transparency
+- Engineering accuracy
+- Experimental validation
+- Maintainable software design
+- Clear documentation
+
+Every contribution should improve either the implementation, benchmark methodology, documentation, or reproducibility of the framework.
+
+---
+
+# Ways to Contribute
+
+Contributions may include:
+
+- Smart contract improvements
+- Security enhancement modules
+- Benchmark automation
+- Performance optimization
+- Additional blockchain test scenarios
+- Statistical analysis
+- Documentation improvements
+- Bug fixes
+- Unit and integration tests
+- Benchmark datasets
+- Research reproducibility enhancements
+
+---
+
+# Development Workflow
+
+1. Fork the repository.
+
+2. Create a feature branch.
+
+```bash
+git checkout -b feature/<feature-name>
+```
+
+3. Implement your changes.
+
+4. Verify that the project compiles successfully.
+
+```bash
+npm install
+npm run compile
+```
+
+5. Execute all benchmark tests.
+
+```bash
+npm test
+```
+
+6. Run the benchmark.
+
+```bash
+npm run benchmark
+```
+
+7. If your contribution modifies experimental behaviour, update the documentation accordingly.
+
+8. Commit using a descriptive message.
+
+```bash
+git commit -m "Add replay attack benchmark module"
+```
+
+9. Push your branch.
+
+```bash
+git push origin feature/<feature-name>
+```
+
+10. Submit a Pull Request.
+
+---
+
+# Coding Standards
+
+## Solidity
+
+- Follow Solidity Style Guide.
+- Use descriptive variable and function names.
+- Avoid duplicated logic.
+- Minimize unnecessary storage operations.
+- Document public functions using NatSpec comments.
+- Validate external inputs.
+- Prefer audited OpenZeppelin contracts where appropriate.
+
+---
+
+## JavaScript
+
+- Use modern ECMAScript syntax.
+- Write modular code.
+- Handle exceptions gracefully.
+- Keep benchmark scripts deterministic.
+
+---
+
+## Python
+
+- Follow PEP 8.
+- Use descriptive function names.
+- Document analysis functions.
+- Preserve reproducibility in statistical workflows.
+
+---
+
+# Benchmark Requirements
+
+Any modification affecting benchmark behaviour should include:
+
+- Experimental objective
+- Updated benchmark configuration
+- Validation procedure
+- Evaluation metrics
+- Expected output
+- Reproducibility notes
+
+Benchmark changes should remain compatible with the existing evaluation methodology.
+
+---
+
+# Testing Requirements
+
+Before submitting a Pull Request, verify that:
+
+- All smart contracts compile successfully.
+- Existing tests pass.
+- New functionality includes appropriate tests.
+- Benchmark scripts execute without errors.
+- Statistical analysis scripts complete successfully.
+
+---
+
+# Documentation
+
+When introducing new functionality, update the relevant documentation in the `docs/` directory, including:
+
+- Methodology
+- Benchmark Design
+- Experimental Protocol
+- README (if required)
+
+Clear documentation is essential for reproducible research.
+
+---
+
+# Research Integrity
+
+Contributors are expected to:
+
+- Report experimental results accurately.
+- Avoid unsupported performance claims.
+- Clearly distinguish measured results from assumptions.
+- Preserve reproducibility.
+- Cite external work where appropriate.
+- Respect software licenses.
+
+Contributions that compromise scientific integrity or reproducibility may not be accepted.
+
+---
+
+# Issue Reporting
+
+When reporting an issue, please include:
+
+- Operating system
+- Node.js version
+- Hardhat version
+- Solidity compiler version
+- Steps to reproduce
+- Expected behaviour
+- Observed behaviour
+- Relevant logs or error messages
+
+Providing complete information helps improve reproducibility and debugging.
+
+---
+
+# Pull Request Checklist
+
+Before submitting a Pull Request, confirm that:
+
+- [ ] The project builds successfully.
+- [ ] Tests pass.
+- [ ] Documentation is updated.
+- [ ] Benchmark workflow remains reproducible.
+- [ ] Code follows project conventions.
+- [ ] Experimental behaviour is documented.
+- [ ] No confidential information has been committed.
+
+---
+
+# Code of Conduct
+
+Please follow the project's `CODE_OF_CONDUCT.md` to ensure a respectful and collaborative research environment.
+
+---
+
+# Citation
+
+If your work uses this repository in academic research, please cite it using the metadata provided in `CITATION.cff`.
+
+---
+
+# Contact
+
+**Ravi Khatri**  
+Research Scholar  
+Jaypee University of Engineering and Technology, India
+
+For questions, feature requests, or collaboration, please open a GitHub Issue or submit a Pull Request.

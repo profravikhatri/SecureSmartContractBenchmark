@@ -1,0 +1,459 @@
+"""
+-----------------------------------------------------------------------------
+SecureSmartContractBenchmark
+
+Module:
+    Security Analysis
+
+Description:
+    Evaluates the effectiveness of the proposed security framework
+    by analysing security benchmark results generated during
+    experimental execution.
+
+The module computes:
+
+• Attack Detection Rate
+• Attack Mitigation Rate
+• Authorization Accuracy
+• Replay Protection Effectiveness
+• Oracle Validation Accuracy
+• Runtime Monitoring Accuracy
+• Security Success Rate
+• False Positive Rate
+• False Negative Rate
+• Mitigation Time Statistics
+
+Outputs:
+
+results/
+    security_results.csv
+    attack_summary.csv
+    security_statistics.csv
+
+-----------------------------------------------------------------------------
+"""
+
+from pathlib import Path
+import pandas as pd
+import numpy as np
+
+RESULTS_DIR = Path("../results")
+
+INPUT_FILE = RESULTS_DIR / "security_results.csv"
+
+
+# --------------------------------------------------------------------------
+# Dataset Loader
+# --------------------------------------------------------------------------
+
+def load_security_dataset():
+
+    if not INPUT_FILE.exists():
+
+        raise FileNotFoundError(
+
+            f"Security benchmark not found: {INPUT_FILE}"
+
+        )
+
+    return pd.read_csv(INPUT_FILE)
+
+
+# --------------------------------------------------------------------------
+# Validation
+# --------------------------------------------------------------------------
+
+def validate_security_dataset(df):
+
+    required = [
+
+        "attackType",
+
+        "expectedResult",
+
+        "actualResult",
+
+        "mitigationTime",
+
+        "authorization",
+
+        "oracleValidation",
+
+        "runtimeStatus"
+
+    ]
+
+    missing = [
+
+        c for c in required
+
+        if c not in df.columns
+
+    ]
+
+    if missing:
+
+        raise ValueError(
+
+            "Missing Columns:\n"
+
+            + "\n".join(missing)
+
+        )
+
+
+# --------------------------------------------------------------------------
+# Attack Summary
+# --------------------------------------------------------------------------
+
+def attack_summary(df):
+
+    summary = []
+
+    attacks = sorted(
+
+        df["attackType"].unique()
+
+    )
+
+    for attack in attacks:
+
+        subset = df[
+
+            df["attackType"] == attack
+
+        ]
+
+        attempted = len(subset)
+
+        blocked = (
+
+            subset["actualResult"]
+
+            == "Blocked"
+
+        ).sum()
+
+        successful = (
+
+            subset["actualResult"]
+
+            == "Successful"
+
+        ).sum()
+
+        mitigation = (
+
+            blocked /
+
+            attempted
+
+        ) * 100
+
+        summary.append({
+
+            "AttackType": attack,
+
+            "Attempted": attempted,
+
+            "Blocked": blocked,
+
+            "Successful": successful,
+
+            "MitigationRate(%)":
+
+                round(
+
+                    mitigation,
+
+                    2
+
+                )
+
+        })
+
+    summary_df = pd.DataFrame(summary)
+
+    summary_df.to_csv(
+
+        RESULTS_DIR /
+
+        "attack_summary.csv",
+
+        index=False
+
+    )
+
+    return summary_df
+
+
+# --------------------------------------------------------------------------
+# Detection Metrics
+# --------------------------------------------------------------------------
+
+def security_statistics(df):
+
+    tp = (
+
+        (df["expectedResult"] == "Blocked") &
+
+        (df["actualResult"] == "Blocked")
+
+    ).sum()
+
+    tn = (
+
+        (df["expectedResult"] == "Allowed") &
+
+        (df["actualResult"] == "Allowed")
+
+    ).sum()
+
+    fp = (
+
+        (df["expectedResult"] == "Allowed") &
+
+        (df["actualResult"] == "Blocked")
+
+    ).sum()
+
+    fn = (
+
+        (df["expectedResult"] == "Blocked") &
+
+        (df["actualResult"] == "Allowed")
+
+    ).sum()
+
+    accuracy = (
+
+        (tp + tn)
+
+        /
+
+        (tp + tn + fp + fn)
+
+    ) * 100
+
+    precision = (
+
+        tp /
+
+        (tp + fp)
+
+        if tp + fp > 0
+
+        else 0
+
+    ) * 100
+
+    recall = (
+
+        tp /
+
+        (tp + fn)
+
+        if tp + fn > 0
+
+        else 0
+
+    ) * 100
+
+    f1 = (
+
+        2 *
+
+        precision *
+
+        recall /
+
+        (precision + recall)
+
+        if precision + recall > 0
+
+        else 0
+
+    )
+
+    statistics = pd.DataFrame([{
+
+        "Accuracy(%)":
+
+            round(accuracy,2),
+
+        "Precision(%)":
+
+            round(precision,2),
+
+        "Recall(%)":
+
+            round(recall,2),
+
+        "F1Score":
+
+            round(f1,4),
+
+        "FalsePositive":
+
+            fp,
+
+        "FalseNegative":
+
+            fn
+
+    }])
+
+    statistics.to_csv(
+
+        RESULTS_DIR /
+
+        "security_statistics.csv",
+
+        index=False
+
+    )
+
+    return statistics
+
+
+# --------------------------------------------------------------------------
+# Runtime Statistics
+# --------------------------------------------------------------------------
+
+def runtime_statistics(df):
+
+    runtime = pd.DataFrame([{
+
+        "AverageMitigationTime(ms)":
+
+            round(
+
+                df["mitigationTime"].mean(),
+
+                4
+
+            ),
+
+        "MinimumMitigationTime(ms)":
+
+            round(
+
+                df["mitigationTime"].min(),
+
+                4
+
+            ),
+
+        "MaximumMitigationTime(ms)":
+
+            round(
+
+                df["mitigationTime"].max(),
+
+                4
+
+            ),
+
+        "OracleValidationSuccess(%)":
+
+            round(
+
+                (
+
+                    df["oracleValidation"]
+
+                    == True
+
+                ).mean()*100,
+
+                2
+
+            ),
+
+        "AuthorizationSuccess(%)":
+
+            round(
+
+                (
+
+                    df["authorization"]
+
+                    == True
+
+                ).mean()*100,
+
+                2
+
+            ),
+
+        "RuntimeMonitoringSuccess(%)":
+
+            round(
+
+                (
+
+                    df["runtimeStatus"]
+
+                    == "Active"
+
+                ).mean()*100,
+
+                2
+
+            )
+
+    }])
+
+    runtime.to_csv(
+
+        RESULTS_DIR /
+
+        "runtime_security.csv",
+
+        index=False
+
+    )
+
+    return runtime
+
+
+# --------------------------------------------------------------------------
+# Main Pipeline
+# --------------------------------------------------------------------------
+
+def run_security_analysis():
+
+    print("\n========================================")
+
+    print("Security Benchmark Analysis")
+
+    print("========================================")
+
+    df = load_security_dataset()
+
+    validate_security_dataset(df)
+
+    attacks = attack_summary(df)
+
+    metrics = security_statistics(df)
+
+    runtime = runtime_statistics(df)
+
+    print("\nAttack Summary")
+
+    print(attacks)
+
+    print("\nSecurity Metrics")
+
+    print(metrics)
+
+    print("\nRuntime Metrics")
+
+    print(runtime)
+
+    print("\nSecurity analysis completed.\n")
+
+
+if __name__ == "__main__":
+
+    run_security_analysis()

@@ -1,0 +1,139 @@
+###############################################################################
+# SecureSmartContractBenchmark
+# Git Ignore File
+###############################################################################
+
+##############################
+# Node.js
+##############################
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+##############################
+# Environment Variables
+##############################
+
+.env
+.env.local
+.env.development
+.env.production
+
+##############################
+# Hardhat
+##############################
+
+artifacts/
+cache/
+typechain/
+typechain-types/
+
+##############################
+# Coverage Reports
+##############################
+
+coverage/
+coverage.json
+
+##############################
+# Benchmark Output
+##############################
+
+results/*.csv
+results/*.txt
+results/*.json
+
+# Keep generated figures directory
+!results/figures/
+results/figures/*.png
+results/figures/*.jpg
+results/figures/*.jpeg
+results/figures/*.pdf
+
+##############################
+# Python
+##############################
+
+__pycache__/
+*.py[cod]
+*.pyo
+
+.venv/
+venv/
+env/
+ENV/
+
+.pytest_cache/
+.mypy_cache/
+
+##############################
+# Jupyter
+##############################
+
+.ipynb_checkpoints/
+
+##############################
+# IDE
+##############################
+
+.vscode/
+.idea/
+
+##############################
+# macOS
+##############################
+
+.DS_Store
+
+##############################
+# Windows
+##############################
+
+Thumbs.db
+Desktop.ini
+
+##############################
+# Logs
+##############################
+
+logs/
+*.log
+
+##############################
+# Temporary Files
+##############################
+
+*.tmp
+*.temp
+*.bak
+*.swp
+
+##############################
+# Solidity Build Metadata
+##############################
+
+*.dbg.json
+
+##############################
+# Generated Documentation
+##############################
+
+docs/build/
+site/
+
+##############################
+# Generated Figures
+##############################
+
+analysis/output/
+
+##############################
+# Miscellaneous
+##############################
+
+*.seed
+*.pid
+*.pid.lock

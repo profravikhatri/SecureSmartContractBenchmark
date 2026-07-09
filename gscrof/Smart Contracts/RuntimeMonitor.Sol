@@ -1,0 +1,210 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Contract : RuntimeMonitor
+ *
+ * Description:
+ * Runtime monitoring contract used for recording execution
+ * metadata during benchmark experiments.
+ *
+ * The collected information is exported by benchmark scripts
+ * for statistical analysis.
+ *
+ * -----------------------------------------------------------------------------
+ */
+
+contract RuntimeMonitor {
+
+    address public owner;
+
+    uint256 public executionCounter;
+
+    struct RuntimeRecord {
+
+        uint256 executionId;
+
+        address executor;
+
+        uint256 gasRemaining;
+
+        uint256 timestamp;
+
+        bool success;
+
+        bytes32 operation;
+
+    }
+
+    mapping(uint256 => RuntimeRecord) private runtimeLogs;
+
+    /* ---------------------------------------------------------------------- */
+    /* Events                                                                  */
+    /* ---------------------------------------------------------------------- */
+
+    event ExecutionRecorded(
+
+        uint256 indexed executionId,
+
+        address indexed executor,
+
+        uint256 gasRemaining,
+
+        bool success,
+
+        bytes32 operation
+
+    );
+
+    event RuntimeReset(
+
+        uint256 timestamp
+
+    );
+
+    /* ---------------------------------------------------------------------- */
+    /* Modifiers                                                               */
+    /* ---------------------------------------------------------------------- */
+
+    modifier onlyOwner() {
+
+        require(
+
+            msg.sender == owner,
+
+            "RuntimeMonitor: owner only"
+
+        );
+
+        _;
+
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Constructor                                                             */
+    /* ---------------------------------------------------------------------- */
+
+    constructor() {
+
+        owner = msg.sender;
+
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Record Runtime Information                                              */
+    /* ---------------------------------------------------------------------- */
+
+    function recordExecution(
+
+        uint256 gasRemaining,
+
+        bool success,
+
+        bytes32 operation
+
+    )
+
+        external
+
+    {
+
+        executionCounter++;
+
+        runtimeLogs[executionCounter] = RuntimeRecord({
+
+            executionId: executionCounter,
+
+            executor: msg.sender,
+
+            gasRemaining: gasRemaining,
+
+            timestamp: block.timestamp,
+
+            success: success,
+
+            operation: operation
+
+        });
+
+        emit ExecutionRecorded(
+
+            executionCounter,
+
+            msg.sender,
+
+            gasRemaining,
+
+            success,
+
+            operation
+
+        );
+
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* View Functions                                                          */
+    /* ---------------------------------------------------------------------- */
+
+    function getRuntimeRecord(
+
+        uint256 executionId
+
+    )
+
+        external
+
+        view
+
+        returns(
+
+            RuntimeRecord memory
+
+        )
+
+    {
+
+        return runtimeLogs[executionId];
+
+    }
+
+    function totalExecutions()
+
+        external
+
+        view
+
+        returns(uint256)
+
+    {
+
+        return executionCounter;
+
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Administrative                                                          */
+    /* ---------------------------------------------------------------------- */
+
+    function resetLogs()
+
+        external
+
+        onlyOwner
+
+    {
+
+        executionCounter = 0;
+
+        emit RuntimeReset(
+
+            block.timestamp
+
+        );
+
+    }
+
+}

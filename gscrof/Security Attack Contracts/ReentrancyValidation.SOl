@@ -1,0 +1,225 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Contract : ReentrancyValidation
+ *
+ * Description:
+ * Validation module used to verify execution consistency of
+ * smart contract transactions during benchmark experiments.
+ *
+ * This contract is intended for defensive validation and
+ * reproducible benchmarking.
+ * -----------------------------------------------------------------------------
+ */
+
+interface IProposedFramework {
+
+    function createTransaction(
+
+        address consumer,
+
+        uint256 energyAmount,
+
+        uint256 unitPrice
+
+    ) external;
+
+    function totalTransactions()
+
+        external
+
+        view
+
+        returns(uint256);
+
+}
+
+contract ReentrancyValidation {
+
+    IProposedFramework public framework;
+
+    uint256 public validationRuns;
+
+    uint256 public successfulRuns;
+
+    uint256 public failedRuns;
+
+    struct ValidationResult {
+
+        uint256 runId;
+
+        bool passed;
+
+        uint256 transactionsBefore;
+
+        uint256 transactionsAfter;
+
+        uint256 timestamp;
+
+    }
+
+    mapping(uint256 => ValidationResult) public results;
+
+    event ValidationExecuted(
+
+        uint256 indexed runId,
+
+        bool passed,
+
+        uint256 beforeCount,
+
+        uint256 afterCount
+
+    );
+
+    constructor(address frameworkAddress) {
+
+        framework = IProposedFramework(
+
+            frameworkAddress
+
+        );
+
+    }
+
+    /**
+     * ----------------------------------------------------------
+     * Validate Transaction Consistency
+     * ----------------------------------------------------------
+     */
+
+    function validateExecution(
+
+        address consumer,
+
+        uint256 energy,
+
+        uint256 price
+
+    )
+
+        external
+
+    {
+
+        validationRuns++;
+
+        uint256 beforeCount =
+
+            framework.totalTransactions();
+
+        bool passed = true;
+
+        try framework.createTransaction(
+
+            consumer,
+
+            energy,
+
+            price
+
+        ) {
+
+        }
+
+        catch {
+
+            passed = false;
+
+        }
+
+        uint256 afterCount =
+
+            framework.totalTransactions();
+
+        if (
+
+            passed &&
+
+            afterCount == beforeCount + 1
+
+        ) {
+
+            successfulRuns++;
+
+        }
+
+        else {
+
+            failedRuns++;
+
+            passed = false;
+
+        }
+
+        results[validationRuns] =
+
+            ValidationResult({
+
+                runId: validationRuns,
+
+                passed: passed,
+
+                transactionsBefore: beforeCount,
+
+                transactionsAfter: afterCount,
+
+                timestamp: block.timestamp
+
+            });
+
+        emit ValidationExecuted(
+
+            validationRuns,
+
+            passed,
+
+            beforeCount,
+
+            afterCount
+
+        );
+
+    }
+
+    /**
+     * ----------------------------------------------------------
+     * Validation Summary
+     * ----------------------------------------------------------
+     */
+
+    function validationSummary()
+
+        external
+
+        view
+
+        returns(
+
+            uint256,
+
+            uint256,
+
+            uint256
+
+        )
+
+    {
+
+        return (
+
+            validationRuns,
+
+            successfulRuns,
+
+            failedRuns
+
+        );
+
+    }
+
+}

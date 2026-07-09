@@ -1,0 +1,115 @@
+# Changelog
+
+All notable changes to this repository will be documented in this file.
+
+This project follows the principles of reproducible research. Each version records significant updates to the framework, experimental methodology, benchmark implementation, and documentation.
+
+The format is based on **Keep a Changelog**, and the project follows **Semantic Versioning (MAJOR.MINOR.PATCH)**.
+
+---
+
+## [1.0.0] - 2026-07-08
+
+### Added
+
+- Initial release of the **SecureSmartContractBenchmark** research framework.
+- Modular smart contract architecture for secure blockchain applications.
+- Benchmark methodology for computational performance, security, scalability, and application-level evaluation.
+- Standardized benchmark evaluation metrics.
+- Reproducible experimental workflow.
+- Hardhat project configuration.
+- Python-based statistical analysis framework.
+- Smart-grid transaction dataset integration.
+- Documentation for methodology, benchmark design, and experiment protocol.
+- GitHub-ready project structure for reproducible research.
+
+### Planned
+
+- Baseline smart contract implementation.
+- Proposed optimization framework.
+- Security attack simulation modules.
+- Oracle validation module.
+- Runtime monitoring framework.
+- Benchmark automation scripts.
+- Statistical validation pipeline.
+- Publication-ready visualization module.
+
+---
+
+## [0.2.0] - Planned
+
+### Planned
+
+- Implementation of benchmark smart contracts.
+- Role-based access control.
+- Oracle integrity verification.
+- Replay attack protection.
+- Runtime event monitoring.
+- Gas optimization techniques.
+- Benchmark dataset replay engine.
+
+---
+
+## [0.3.0] - Planned
+
+### Planned
+
+- Security attack simulation framework.
+- Reentrancy attack implementation.
+- Replay attack simulation.
+- Unauthorized access testing.
+- Oracle manipulation scenarios.
+- Gas-griefing benchmark.
+- Automated security validation.
+
+---
+
+## [0.4.0] - Planned
+
+### Planned
+
+- Performance benchmarking.
+- Gas consumption analysis.
+- Execution latency evaluation.
+- Throughput measurement.
+- Resource utilization analysis.
+- Scalability benchmarking.
+
+---
+
+## [0.5.0] - Planned
+
+### Planned
+
+- Statistical validation module.
+- Confidence interval estimation.
+- Hypothesis testing.
+- Comparative analysis with baseline approaches.
+- Automated report generation.
+- Publication-quality figures.
+
+---
+
+## [1.1.0] - Future
+
+### Planned
+
+- Extended benchmark datasets.
+- Multi-chain deployment support.
+- Advanced oracle evaluation.
+- Additional blockchain application scenarios.
+- Continuous integration for automated benchmarking.
+
+---
+
+## Versioning Policy
+
+- **MAJOR** versions introduce significant research framework updates or architectural changes.
+- **MINOR** versions add validated functionality, benchmark modules, or experimental capabilities.
+- **PATCH** versions resolve implementation issues, improve documentation, or correct reproducibility-related problems without changing the research methodology.
+
+---
+
+## Citation
+
+If this repository contributes to your research, please cite the software using the metadata provided in `CITATION.cff`.

@@ -1,0 +1,173 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Library : SecurityLibrary
+ *
+ * Description:
+ * Reusable security functions for smart contract validation.
+ * The library contains deterministic validation routines that
+ * support transaction integrity, replay protection, timestamp
+ * validation, and address verification.
+ *
+ * -----------------------------------------------------------------------------
+ */
+
+library SecurityLibrary {
+
+    /* ---------------------------------------------------------------------- */
+    /* Address Validation                                                     */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Verify that an address is valid.
+     */
+    function isValidAddress(
+        address account
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        return account != address(0);
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Positive Value Validation                                               */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Verify positive numeric values.
+     */
+    function isPositive(
+        uint256 value
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        return value > 0;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Timestamp Validation                                                    */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Verify whether data is still valid.
+     */
+    function isFreshData(
+        uint256 timestamp,
+        uint256 validityPeriod
+    )
+        internal
+        view
+        returns (bool)
+    {
+        return block.timestamp <= timestamp + validityPeriod;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Replay Protection                                                       */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Verify sequential nonce.
+     */
+    function validateNonce(
+        uint256 currentNonce,
+        uint256 receivedNonce
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        return receivedNonce == currentNonce + 1;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Cost Validation                                                         */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Verify total transaction cost.
+     */
+    function validateTotalCost(
+        uint256 energyAmount,
+        uint256 unitPrice,
+        uint256 totalCost
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        return (energyAmount * unitPrice) == totalCost;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Transaction Identifier                                                  */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Generate deterministic transaction identifier.
+     */
+    function generateTransactionHash(
+        uint256 transactionId,
+        address producer,
+        address consumer,
+        uint256 timestamp
+    )
+        internal
+        pure
+        returns (bytes32)
+    {
+        return keccak256(
+            abi.encodePacked(
+                transactionId,
+                producer,
+                consumer,
+                timestamp
+            )
+        );
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Energy Validation                                                       */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Validate energy transaction values.
+     */
+    function validateEnergyRecord(
+        uint256 energyAmount,
+        uint256 unitPrice
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        return energyAmount > 0 && unitPrice > 0;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Range Validation                                                        */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Verify that a value lies within a permitted range.
+     */
+    function withinRange(
+        uint256 value,
+        uint256 minimum,
+        uint256 maximum
+    )
+        internal
+        pure
+        returns (bool)
+    {
+        return value >= minimum && value <= maximum;
+    }
+}

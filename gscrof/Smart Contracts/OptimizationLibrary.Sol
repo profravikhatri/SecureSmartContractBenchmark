@@ -1,0 +1,191 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Library : OptimizationLibrary
+ *
+ * Description:
+ * Reusable computational helper functions designed to improve
+ * execution efficiency while preserving deterministic smart
+ * contract behaviour.
+ *
+ * The library performs arithmetic and aggregation operations
+ * without maintaining contract state.
+ * -----------------------------------------------------------------------------
+ */
+
+library OptimizationLibrary {
+
+    /* ---------------------------------------------------------------------- */
+    /* Transaction Cost Calculation                                            */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Computes total transaction cost.
+     */
+    function calculateTotal(
+        uint256 energyAmount,
+        uint256 unitPrice
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        return energyAmount * unitPrice;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Average Calculation                                                     */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Computes arithmetic mean.
+     */
+    function average(
+        uint256 totalValue,
+        uint256 totalRecords
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        if (totalRecords == 0) {
+            return 0;
+        }
+
+        return totalValue / totalRecords;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Percentage Calculation                                                  */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Computes percentage value.
+     */
+    function calculatePercentage(
+        uint256 value,
+        uint256 total
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        if (total == 0) {
+            return 0;
+        }
+
+        return (value * 100) / total;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Minimum Value                                                           */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Returns minimum of two values.
+     */
+    function minimum(
+        uint256 a,
+        uint256 b
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        return a < b ? a : b;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Maximum Value                                                           */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Returns maximum of two values.
+     */
+    function maximum(
+        uint256 a,
+        uint256 b
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        return a > b ? a : b;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Absolute Difference                                                     */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Computes absolute difference.
+     */
+    function absoluteDifference(
+        uint256 first,
+        uint256 second
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        return first >= second
+            ? first - second
+            : second - first;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Bounded Value                                                           */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Restricts a value to a specified range.
+     */
+    function clamp(
+        uint256 value,
+        uint256 minimumValue,
+        uint256 maximumValue
+    )
+        internal
+        pure
+        returns (uint256)
+    {
+        if (value < minimumValue) {
+            return minimumValue;
+        }
+
+        if (value > maximumValue) {
+            return maximumValue;
+        }
+
+        return value;
+    }
+
+    /* ---------------------------------------------------------------------- */
+    /* Batch Cost Calculation                                                  */
+    /* ---------------------------------------------------------------------- */
+
+    /**
+     * @notice Computes total energy cost for multiple transactions.
+     */
+    function batchTotal(
+        uint256[] memory energy,
+        uint256[] memory price
+    )
+        internal
+        pure
+        returns (uint256 total)
+    {
+        require(
+            energy.length == price.length,
+            "OptimizationLibrary: length mismatch"
+        );
+
+        for (uint256 i = 0; i < energy.length; i++) {
+            total += energy[i] * price[i];
+        }
+    }
+}

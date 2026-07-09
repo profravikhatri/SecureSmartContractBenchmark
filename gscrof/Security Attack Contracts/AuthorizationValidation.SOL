@@ -1,0 +1,205 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Contract : AuthorizationValidation
+ *
+ * Description:
+ * Validation module for evaluating role-based authorization
+ * in benchmark experiments.
+ *
+ * This contract records authorization outcomes and benchmark
+ * statistics for reproducible research.
+ * -----------------------------------------------------------------------------
+ */
+
+interface IAccessManager {
+
+    function isAuthorized(
+        address account
+    )
+        external
+        view
+        returns (bool);
+
+}
+
+contract AuthorizationValidation {
+
+    IAccessManager public accessManager;
+
+    uint256 public validationCounter;
+
+    uint256 public authorizedRequests;
+
+    uint256 public rejectedRequests;
+
+    struct AuthorizationResult {
+
+        uint256 validationId;
+
+        address participant;
+
+        bool authorized;
+
+        uint256 timestamp;
+
+    }
+
+    mapping(uint256 => AuthorizationResult)
+        public validationResults;
+
+    event AuthorizationChecked(
+
+        uint256 indexed validationId,
+
+        address indexed participant,
+
+        bool authorized
+
+    );
+
+    constructor(address accessManagerAddress) {
+
+        accessManager =
+
+            IAccessManager(
+
+                accessManagerAddress
+
+            );
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Validate Authorization
+     * --------------------------------------------------------
+     */
+
+    function validateAuthorization(
+
+        address participant
+
+    )
+
+        external
+
+    {
+
+        validationCounter++;
+
+        bool status =
+
+            accessManager.isAuthorized(
+
+                participant
+
+            );
+
+        if (status) {
+
+            authorizedRequests++;
+
+        }
+
+        else {
+
+            rejectedRequests++;
+
+        }
+
+        validationResults[validationCounter] =
+
+            AuthorizationResult({
+
+                validationId: validationCounter,
+
+                participant: participant,
+
+                authorized: status,
+
+                timestamp: block.timestamp
+
+            });
+
+        emit AuthorizationChecked(
+
+            validationCounter,
+
+            participant,
+
+            status
+
+        );
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Retrieve Validation Result
+     * --------------------------------------------------------
+     */
+
+    function getValidationResult(
+
+        uint256 validationId
+
+    )
+
+        external
+
+        view
+
+        returns(
+
+            AuthorizationResult memory
+
+        )
+
+    {
+
+        return validationResults[validationId];
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Validation Summary
+     * --------------------------------------------------------
+     */
+
+    function validationSummary()
+
+        external
+
+        view
+
+        returns(
+
+            uint256 totalRuns,
+
+            uint256 successful,
+
+            uint256 rejected
+
+        )
+
+    {
+
+        return (
+
+            validationCounter,
+
+            authorizedRequests,
+
+            rejectedRequests
+
+        );
+
+    }
+
+}

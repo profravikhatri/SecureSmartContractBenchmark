@@ -1,0 +1,306 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Contract : PerformanceValidation
+ *
+ * Description:
+ * Central benchmark module responsible for recording execution
+ * performance during experimental evaluation.
+ *
+ * The contract aggregates benchmark statistics generated during
+ * validation experiments and provides reproducible measurements
+ * for subsequent statistical analysis.
+ * -----------------------------------------------------------------------------
+ */
+
+contract PerformanceValidation {
+
+    uint256 public benchmarkCounter;
+
+    uint256 public successfulExecutions;
+
+    uint256 public failedExecutions;
+
+    uint256 public totalGasConsumed;
+
+    uint256 public totalExecutionTime;
+
+    struct BenchmarkRecord {
+
+        uint256 benchmarkId;
+
+        string module;
+
+        uint256 gasConsumed;
+
+        uint256 executionTime;
+
+        bool success;
+
+        uint256 timestamp;
+
+    }
+
+    mapping(uint256 => BenchmarkRecord)
+
+        private benchmarkResults;
+
+    event BenchmarkRecorded(
+
+        uint256 indexed benchmarkId,
+
+        string module,
+
+        uint256 gasConsumed,
+
+        uint256 executionTime,
+
+        bool success
+
+    );
+
+    /**
+     * --------------------------------------------------------
+     * Record Benchmark Result
+     * --------------------------------------------------------
+     */
+
+    function recordBenchmark(
+
+        string calldata module,
+
+        uint256 gasConsumed,
+
+        uint256 executionTime,
+
+        bool success
+
+    )
+
+        external
+
+    {
+
+        benchmarkCounter++;
+
+        benchmarkResults[benchmarkCounter] =
+
+            BenchmarkRecord({
+
+                benchmarkId: benchmarkCounter,
+
+                module: module,
+
+                gasConsumed: gasConsumed,
+
+                executionTime: executionTime,
+
+                success: success,
+
+                timestamp: block.timestamp
+
+            });
+
+        totalGasConsumed += gasConsumed;
+
+        totalExecutionTime += executionTime;
+
+        if(success){
+
+            successfulExecutions++;
+
+        }
+
+        else{
+
+            failedExecutions++;
+
+        }
+
+        emit BenchmarkRecorded(
+
+            benchmarkCounter,
+
+            module,
+
+            gasConsumed,
+
+            executionTime,
+
+            success
+
+        );
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Average Gas
+     * --------------------------------------------------------
+     */
+
+    function averageGas()
+
+        public
+
+        view
+
+        returns(uint256)
+
+    {
+
+        if(benchmarkCounter == 0){
+
+            return 0;
+
+        }
+
+        return totalGasConsumed /
+
+               benchmarkCounter;
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Average Execution Time
+     * --------------------------------------------------------
+     */
+
+    function averageExecutionTime()
+
+        public
+
+        view
+
+        returns(uint256)
+
+    {
+
+        if(benchmarkCounter == 0){
+
+            return 0;
+
+        }
+
+        return totalExecutionTime /
+
+               benchmarkCounter;
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Success Rate
+     * --------------------------------------------------------
+     */
+
+    function successRate()
+
+        public
+
+        view
+
+        returns(uint256)
+
+    {
+
+        if(benchmarkCounter == 0){
+
+            return 0;
+
+        }
+
+        return
+
+        (successfulExecutions * 100)
+
+        /
+
+        benchmarkCounter;
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Retrieve Benchmark
+     * --------------------------------------------------------
+     */
+
+    function getBenchmark(
+
+        uint256 benchmarkId
+
+    )
+
+        external
+
+        view
+
+        returns(
+
+            BenchmarkRecord memory
+
+        )
+
+    {
+
+        return
+
+        benchmarkResults[benchmarkId];
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Benchmark Summary
+     * --------------------------------------------------------
+     */
+
+    function benchmarkSummary()
+
+        external
+
+        view
+
+        returns(
+
+            uint256 totalBenchmarks,
+
+            uint256 successful,
+
+            uint256 failed,
+
+            uint256 avgGas,
+
+            uint256 avgExecution,
+
+            uint256 successPercentage
+
+        )
+
+    {
+
+        return(
+
+            benchmarkCounter,
+
+            successfulExecutions,
+
+            failedExecutions,
+
+            averageGas(),
+
+            averageExecutionTime(),
+
+            successRate()
+
+        );
+
+    }
+
+}

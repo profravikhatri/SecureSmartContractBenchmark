@@ -1,0 +1,28 @@
+###############################################################################
+# SecureSmartContractBenchmark
+# Python Requirements
+# Version 1.0.0
+###############################################################################
+
+# Data Processing
+pandas==2.2.2
+numpy==1.26.4
+
+# Statistical Analysis
+scipy==1.13.1
+statsmodels==0.14.2
+
+# Data Visualization
+matplotlib==3.9.0
+
+# Machine Learning Utilities (Optional Future Extension)
+scikit-learn==1.5.1
+
+# Excel Support
+openpyxl==3.1.5
+
+# JSON Schema Validation
+jsonschema==4.23.0
+
+# Progress Bar
+tqdm==4.66.4

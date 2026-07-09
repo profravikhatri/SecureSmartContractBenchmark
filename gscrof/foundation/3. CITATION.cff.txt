@@ -1,0 +1,9 @@
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Khatri"
+      given-names: "Ravi"
+  title: "<Final Published Paper Title>"
+  journal: "<Journal Name>"
+  year: 2026
+  doi: "<DOI>"

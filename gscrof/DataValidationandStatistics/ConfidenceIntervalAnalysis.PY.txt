@@ -1,0 +1,131 @@
+# --------------------------------------------------------------------------
+# Confidence Interval Analysis
+# --------------------------------------------------------------------------
+
+from scipy.stats import t
+import numpy as np
+
+
+def confidence_intervals(
+    df: pd.DataFrame,
+    output_directory: Path = RESULTS_DIR,
+    confidence: float = 0.95
+) -> pd.DataFrame:
+    """
+    Compute confidence intervals for benchmark metrics grouped
+    by contract.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Validated benchmark dataset.
+
+    confidence : float
+        Confidence level (default = 95%).
+
+    Returns
+    -------
+    pandas.DataFrame
+    """
+
+    metrics = [
+
+        "gasUsed",
+
+        "latencyMs"
+
+    ]
+
+    contracts = sorted(
+
+        df["contract"].unique()
+
+    )
+
+    results = []
+
+    print("\n====================================")
+    print("Confidence Interval Analysis")
+    print("====================================")
+
+    for contract in contracts:
+
+        contract_df = df[
+
+            df["contract"] == contract
+
+        ]
+
+        for metric in metrics:
+
+            values = contract_df[metric]
+
+            n = len(values)
+
+            mean = values.mean()
+
+            std = values.std(ddof=1)
+
+            sem = std / np.sqrt(n)
+
+            margin = t.ppf(
+
+                (1 + confidence) / 2,
+
+                n - 1
+
+            ) * sem
+
+            lower = mean - margin
+
+            upper = mean + margin
+
+            results.append({
+
+                "Contract": contract,
+
+                "Metric": metric,
+
+                "Count": n,
+
+                "Mean": round(mean, 4),
+
+                "StandardDeviation": round(std, 4),
+
+                "ConfidenceLevel": confidence,
+
+                "LowerCI": round(lower, 4),
+
+                "UpperCI": round(upper, 4),
+
+                "MarginOfError": round(margin, 4)
+
+            })
+
+    confidence_df = pd.DataFrame(results)
+
+    output_file = (
+
+        output_directory /
+
+        "confidence_interval.csv"
+
+    )
+
+    confidence_df.to_csv(
+
+        output_file,
+
+        index=False
+
+    )
+
+    print(confidence_df)
+
+    print(
+
+        f"\nConfidence intervals exported to: {output_file}"
+
+    )
+
+    return confidence_df

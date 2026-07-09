@@ -1,0 +1,212 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.28;
+
+/**
+ * -----------------------------------------------------------------------------
+ * SecureSmartContractBenchmark
+ * -----------------------------------------------------------------------------
+ * Contract : ReplayValidation
+ *
+ * Description:
+ * Validation module for evaluating nonce-based replay protection.
+ * It records validation outcomes for benchmark analysis without
+ * implementing replay attacks.
+ * -----------------------------------------------------------------------------
+ */
+
+interface IReplayProtectedFramework {
+
+    function accountNonce(address user)
+        external
+        view
+        returns (uint256);
+}
+
+contract ReplayValidation {
+
+    IReplayProtectedFramework public framework;
+
+    uint256 public validationCounter;
+
+    uint256 public successfulValidations;
+
+    uint256 public failedValidations;
+
+    struct ReplayResult {
+
+        uint256 validationId;
+
+        address participant;
+
+        uint256 currentNonce;
+
+        uint256 receivedNonce;
+
+        bool accepted;
+
+        uint256 timestamp;
+
+    }
+
+    mapping(uint256 => ReplayResult) public validationResults;
+
+    event ReplayValidationCompleted(
+
+        uint256 indexed validationId,
+
+        address indexed participant,
+
+        bool accepted,
+
+        uint256 currentNonce,
+
+        uint256 receivedNonce
+
+    );
+
+    constructor(address frameworkAddress) {
+
+        framework = IReplayProtectedFramework(
+
+            frameworkAddress
+
+        );
+
+    }
+
+    /**
+     * ----------------------------------------------------------
+     * Validate Nonce
+     * ----------------------------------------------------------
+     *
+     * expected:
+     * receivedNonce == currentNonce + 1
+     */
+
+    function validateNonce(
+
+        address participant,
+
+        uint256 receivedNonce
+
+    )
+
+        external
+
+    {
+
+        validationCounter++;
+
+        uint256 currentNonce =
+
+            framework.accountNonce(participant);
+
+        bool accepted =
+
+            receivedNonce == currentNonce + 1;
+
+        if (accepted) {
+
+            successfulValidations++;
+
+        } else {
+
+            failedValidations++;
+
+        }
+
+        validationResults[validationCounter] =
+
+            ReplayResult({
+
+                validationId: validationCounter,
+
+                participant: participant,
+
+                currentNonce: currentNonce,
+
+                receivedNonce: receivedNonce,
+
+                accepted: accepted,
+
+                timestamp: block.timestamp
+
+            });
+
+        emit ReplayValidationCompleted(
+
+            validationCounter,
+
+            participant,
+
+            accepted,
+
+            currentNonce,
+
+            receivedNonce
+
+        );
+
+    }
+
+    /**
+     * ----------------------------------------------------------
+     * Retrieve Validation Result
+     * ----------------------------------------------------------
+     */
+
+    function getValidationResult(
+
+        uint256 validationId
+
+    )
+
+        external
+
+        view
+
+        returns (ReplayResult memory)
+
+    {
+
+        return validationResults[validationId];
+
+    }
+
+    /**
+     * ----------------------------------------------------------
+     * Validation Statistics
+     * ----------------------------------------------------------
+     */
+
+    function validationSummary()
+
+        external
+
+        view
+
+        returns(
+
+            uint256 totalRuns,
+
+            uint256 successful,
+
+            uint256 failed
+
+        )
+
+    {
+
+        return (
+
+            validationCounter,
+
+            successfulValidations,
+
+            failedValidations
+
+        );
+
+    }
+
+}
