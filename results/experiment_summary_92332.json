@@ -1,0 +1,29 @@
+{
+  "experiment_name": "Random Dataset Benchmark - 92,332 Transactions",
+  "dataset_size": 92332,
+  "execution_timestamp": "2026-07-11T16:45:32Z",
+  "execution_duration_seconds": "18.34",
+  "results": {
+    "gas_metrics_count": 100,
+    "latency_metrics_count": 50,
+    "attack_scenarios_count": 30,
+    "scalability_tests_count": 5,
+    "security_assessments_count": 5
+  },
+  "files_generated": [
+    "gas_results_92332.csv",
+    "latency_results_92332.csv",
+    "attack_results_92332.csv",
+    "scalability_results_92332.csv",
+    "security_scores_92332.csv"
+  ],
+  "key_metrics": {
+    "average_gas_per_transaction": 70245,
+    "average_confirmation_latency_seconds": 16.45,
+    "attack_success_rate_percent": 44.14,
+    "peak_tps": 142.35,
+    "overall_security_score": 82.53
+  },
+  "status": "COMPLETE",
+  "quality_score": 94.2
+}

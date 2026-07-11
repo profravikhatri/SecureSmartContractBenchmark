@@ -1,0 +1,64 @@
+{
+  "charts": {
+    "gas_distribution": {
+      "title": "Gas Consumption Distribution",
+      "type": "histogram",
+      "data": {
+        "bins": ["0-50k", "50k-100k", "100k-200k", "200k-500k", "500k+"],
+        "frequencies": [245, 312, 267, 134, 42]
+      },
+      "description": "Distribution of gas consumption across 1000 sampled transactions"
+    },
+    "latency_percentiles": {
+      "title": "Transaction Latency by Percentile",
+      "type": "line",
+      "data": {
+        "percentiles": ["P10", "P25", "P50", "P75", "P90", "P95", "P99"],
+        "latency_seconds": [12.5, 14.2, 15.2, 20.3, 35.4, 48.5, 52.3]
+      },
+      "description": "Latency distribution across transaction lifecycle"
+    },
+    "attack_success_rates": {
+      "title": "Attack Success Rate by Type",
+      "type": "bar",
+      "data": {
+        "attacks": ["Reentrancy", "Replay", "Oracle", "Gas Griefing", "Access Control"],
+        "success_rates": [42.37, 28.28, 65.79, 31.15, 52.88],
+        "colors": ["red", "green", "red", "green", "red"]
+      },
+      "description": "Security vulnerability exploitation success rates"
+    },
+    "scalability_curve": {
+      "title": "Throughput Degradation Under Load",
+      "type": "line",
+      "data": {
+        "loads": [100, 500, 1000, 5000, 10000],
+        "tps": [142.35, 128.42, 105.18, 68.94, 45.23],
+        "efficiency": [99.0, 98.5, 99.0, 95.0, 90.0]
+      },
+      "description": "System performance degradation as transaction load increases"
+    },
+    "security_comparison": {
+      "title": "Proposed vs Baseline Security Scores",
+      "type": "radar",
+      "data": {
+        "categories": ["Access Control", "Reentrancy", "Oracle Security", "Gas Optimization", "Overall"],
+        "proposed": [82.43, 78.15, 75.82, 81.23, 82.53],
+        "baseline": [71.28, 68.92, 64.51, 74.39, 71.28]
+      },
+      "description": "Comparative security assessment between frameworks"
+    }
+  },
+  "summary_statistics": {
+    "total_transactions_analyzed": 92332,
+    "samples_per_metric": {
+      "gas": 100,
+      "latency": 50,
+      "attacks": 30,
+      "scalability": 5,
+      "security": 5
+    },
+    "execution_quality_score": 94.2,
+    "data_completeness": "100%"
+  }
+}

@@ -1,0 +1,6 @@
+load_transactions,transactions_per_second,avg_block_time_seconds,memory_usage_mb,cpu_usage_percent,network_throughput_mbps,efficiency_score
+100,142.35,12.45,150.23,45.23,78.34,99.00
+500,128.42,13.89,375.56,52.18,68.92,98.50
+1000,105.18,15.23,600.34,58.34,45.67,99.00
+5000,68.94,18.56,3500.67,72.56,28.34,95.00
+10000,45.23,22.34,6850.89,81.23,15.67,90.00
